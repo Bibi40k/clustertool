@@ -24,11 +24,11 @@ fi
 
 echo "Generating sops.yaml from template"
 AGE=$(cat age.agekey | grep public | sed -e "s|# public key: ||" )
-cat templates/.sops.yaml.templ | sed -e "s|!!AGE!!|$AGE|"  > .sops.yaml
+cat ./src/templates/.sops.yaml.templ | sed -e "s|!!AGE!!|$AGE|"  > .sops.yaml
 
 echo "Creating agekey cluster patch..."
-rm -rf patches/sopssecret.yaml || true
-cat templates/sopssecret.yaml.templ | sed -e "s|!!AGEKEY!!|$( base64 age.agekey -w0 )|" > patches/sopssecret.yaml
+rm -rf ./src/patches/sopssecret.yaml || true
+cat ./src/templates/sopssecret.yaml.templ | sed -e "s|!!AGEKEY!!|$( base64 age.agekey -w0 )|" > ./src/patches/sopssecret.yaml
 
 if test -f "talsecret.yaml"; then
   echo "Talos Secret already exists, skipping..."
@@ -46,16 +46,16 @@ talhelper validate talconfig
 
 echo "(re)generating chart-config"
 rm -f ./cluster/main/flux-system/clustersettings.yaml || true
-cp ./templates/clustersettings.yaml.templ ./cluster/main/flux-config/app/clustersettings.secret.yaml
+cp ./src/templates/clustersettings.yaml.templ ./cluster/main/flux-config/app/clustersettings.secret.yaml
 sed "s/^/  /" talenv.yaml >> ./cluster/main/flux-config/app/clustersettings.secret.yaml
 
 echo "(re)generating included helm-charts"
 rm -f ./src/deps/kubeapps/values.yaml || true
-cp ./templates/kubeappsvalues.yaml.templ ./src/deps/kubeapps/values.yaml
+cp ./src/templates/kubeappsvalues.yaml.templ ./src/deps/kubeapps/values.yaml
 sed -i "s/KUBEAPPS_IP/${KUBEAPPS_IP}/" ./src/deps/kubeapps/values.yaml
 
 rm -f ./src/deps/metallb-config/values.yaml || true
-cp ./templates/metallbconfigvalues.yaml.templ ./src/deps/metallb-config/values.yaml
+cp ./src/templates/metallbconfigvalues.yaml.templ ./src/deps/metallb-config/values.yaml
 sed -i "s/KUBEAPPS_IP/${METALLB_RANGE}/" ./src/deps/metallb-config/values.yaml
 
 }

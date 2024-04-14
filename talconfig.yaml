@@ -15,7 +15,7 @@ clusterSvcNets:
 cniConfig:
     name: none
 patches:
-    - '@./patches/all.json'
+    - '@./src/patches/all.json'
 nodes:
     - hostname: k8s-control-1
       ipAddress: ${MASTER1IP}
@@ -37,11 +37,11 @@ nodes:
             ip: ${VIP}
 controlPlane:
     patches:
-        - '@./patches/controlplane.json'
-        - '@./patches/sopssecret.yaml'
-        - '@./patches/manifests.yaml'
-        # - '@./patches/kubePrism.json'
-        # - '@./patches/nvidia.json'
+        - '@./src/patches/controlplane.json'
+        - '@./src/patches/sopssecret.yaml'
+        - '@./src/patches/manifests.yaml'
+        # - '@./src/patches/kubePrism.json'
+        # - '@./src/patches/nvidia.json'
     schematic:
         customization:
             extraKernelArgs:
@@ -60,9 +60,9 @@ controlPlane:
                     # - siderolabs/thunderbolt
 worker:
     patches:
-        - '@./patches/worker.json'
-        # - '@./patches/kubePrism.json'
-        # - '@./patches/nvidia.json'
+        - '@./src/patches/worker.json'
+        # - '@./src/patches/kubePrism.json'
+        # - '@./src/patches/nvidia.json'
     schematic:
         customization:
             systemExtensions:
